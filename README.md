@@ -1,6 +1,7 @@
 # Pure_P2P_Network_NodeJS
 ## Implementing a pure peer-to-peer network using NodeJS
 - image querying function amongst connected peers
+  - peer looks for queried image within local directory and sends them via buffer
 - peer tracker that keeps track of the connected peers' ip:portNum
 
 User can define the maximum number of peers it can connect to; if undefined - defaults to 6
