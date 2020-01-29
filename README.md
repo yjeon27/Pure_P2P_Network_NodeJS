@@ -3,7 +3,7 @@
 - image querying function amongst connected peers
   - peer looks for queried image within local directory and sends them via buffer
 - peer tracker that keeps track of the connected peers' ip:portNum
-User can define the maximum number of peers it can connect to; if undefined - defaults to 6
+- User can define the maximum number of peers it can connect to; if undefined - defaults to 6
 ### Scenario (Refer to pictures in `FLOW_OF_PROGRAM`):
 - 4 peers
 - Connects to each other in chronological order, while querying for images that some peers have; some don't
