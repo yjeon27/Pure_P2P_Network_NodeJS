@@ -5,6 +5,7 @@
 
 User can define the maximum number of peers it can connect to; if undefined - defaults to 6
 
+
 ### Scenario (Refer to pictures in `FLOW_OF_PROGRAM`):
 - 4 peers
 - Connects to each other in chronological order, while querying for images that some peers have; some don't
@@ -13,5 +14,7 @@ User can define the maximum number of peers it can connect to; if undefined - de
 ### Test It Yourself!
 1. Clone repo
 2. Copy the directory 4 times in separate directories to simulate 4 *different peers*
-3. Remove different images from different directories to test out image querying
-4. Follow commands shown in `FLOW_OF_PROGRAM`
+3. Install the node dependencies by typing in
+  - cmd > `node install`
+4. Remove different images from different directories to test out image querying
+5. Follow commands shown in `FLOW_OF_PROGRAM`
