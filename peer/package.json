@@ -2,11 +2,11 @@
   "name": "p2p",
   "version": "1.0.0",
   "description": "",
-  "main": "Peer.js",
+  "main": "peer2peerDB.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Young Wan Jeon",
+  "author": "Patrick Park",
   "license": "ISC",
   "dependencies": {
     "lodash": "^4.17.11",

@@ -32,6 +32,9 @@ var reader;
 var temp, temp1, ranPort, ranImgPort;
 var folderName = path.basename(__dirname);
 
+current_dir = process.cwd()
+console.log('Current directory: ' + current_dir)
+
 net.bytesWritten = 300000;
 net.bufferSize = 300000;
 
@@ -129,7 +132,7 @@ if (s != undefined){
     //  CLIENT PART FOR IMAGEDB
     ITPpacket.init(s);
         //  Only connect if image cannot be found locally
-    if (!fs.existsSync('C:/Users/yjeon/Desktop/SE 3314B/ASN3/'+folderName+'/images/'+s)){
+    if (!fs.existsSync(current_dir+'\\images\\'+s)){
         console.log('//////////////////////////////////////////////');
         console.log('Queried image does not exist in local system.');
         console.log('//////////////////////////////////////////////');
@@ -152,21 +155,26 @@ if (s != undefined){
                 if (err) console.log(err);
                 else {
                     // Opens a image in the default system image viewer
-                    opn('C:/Users/Young/Desktop/SE 3314B/asn3/MY CODE/'+folderName+'/images/receivedImage.jpg');
+                    opn(current_dir+'\\images\\receivedImage.jpg');
                     //opn('./receivedImage.jpg')    //  this method always resulted in errors****
                 }
             });
         });
     }else{
-        opn('C:/Users/yjeon/Desktop/SE 3314B/ASN3/'+folderName+'/images/'+s);
+        opn(current_dir+'\\images\\'+s);
     }
+    // if image is not found
+    // send search packet to all peers in peerlist
+
+    //
 }
 
 
-
+// var sockarray = [];
 
 var startClient = (_p) => {
     let peerC = new net.Socket();       // client-side
+    // sockarray.push(peerC);
     console.log('=============================================================');
     console.log('STARTING CLIENT - _p: ', _p);
     if (typeof(_p) == 'undefined'){
@@ -268,10 +276,96 @@ var startClient = (_p) => {
                     This peer address is ${peerS.address().address}:${peerS.address().port} located at ${folderName}
                     Received ack from ${trackerPort}`);
                 for (let i = 0; i < peerNum; i++){
+                    //  *************************************************************
+                    //  *************************************************************
+                    //  *************************************************************
+                    //  *************************************************************
+                    //  *************************************************************
+                    //  THIS NEEDS TO CHANGE SO THAT IT DEVELOPS AN EDGE CASE(?) FOR WHEN THE ONLY PEER INSIDE THE PEER TALE ISN'T ITSELF
                     console.log(`
                         which is peered with: 127.0.0.1:`,peerPort[i]);
                 }
                 console.log('\n\n');
+                console.log("THIS IS MY PEERTABLE:\n"+peerTable);
+
+                // let check = true;
+
+                // function checkOwn (){
+                //     console.log("\n\n/////////INSIDE CHECKOWN/////////\n\n")
+                //     for(let j=0; j<peerNum; j++){
+                //         if(ranPort == peerPort[j]){
+                //             // return true;
+                //             check = false;
+                //         }
+                //     }
+                // }
+
+                // checkOwn();
+
+
+                // console.log("CHECK = "+check);
+
+                // let cnt = 0;
+                // while(check && cnt < peerNum){
+
+                //     if(peerTable.length == n){
+                //         console.log('maximum peer number reached...');
+                //         break;
+                //     }
+                //     console.log('attempting to connect to ',peerPort[cnt],' ...');
+
+                //     // check to see if I am already connected to the same peer
+                //     if(peerTable.includes(peerPort[cnt])){
+                //         console.log('Already connected to ',peerPort[cnt]);
+                //     }else if(peerPort[cnt] == ranPort){
+                //         console.log("THIS IS MY OWN PORT DUMBASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+                //     }else{
+                //         console.log('peerPort: ', peerPort);
+                //         startClient(parseInt(peerPort[cnt],10))
+                //     }
+
+                //     cnt++;
+                // }
+
+                // function checkAlrdyConnected(){
+                //     console.log("\n***********\ninside CHECKALRDYCONNECTED()");
+                //     console.log("typeof(peerTable[0]): "+typeof(peerTable[0]));
+                //     console.log("peerTable: "+peerTable);
+                //     console.log("peerPort: "+peerPort);
+                //     for(let i=0; i < peerNum; i++){
+                //         // console.log(typeof(peerPort[i]));
+                //         if(peerTable.includes(parseInt(peerPort[i],10))){
+                //             console.log("it has........");
+                //             return true;
+                //         }
+                //     }
+                // }
+
+                console.log('also connecting to list of forwarded peers: ', peerPort);
+                for (let i = 0; i < peerNum; i++){
+                    //  if current peer's peerTable is at maximum, exit out of for loop
+ 
+                    // if(peerTable.length == n){
+                    //     console.log('maximum peer number reached...');
+                    //     break;
+                    // }
+
+                    console.log('peerPort: ', peerPort);    
+
+                    // check to see if I am already connected to the same peer
+                    if(peerTable.length == n){
+                        console.log('maximum peer number reached...');
+                    }else if(peerPort[i] == ranPort){
+                        console.log("THIS IS MY OWN PORT DUMBASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+                    }else if(peerTable.includes(parseInt(peerPort[i],10))){
+                        console.log('Already connected to ',peerPort[i]);
+                    }/*else if(checkAlrdyConnected()){
+                        console.log('Already connected to ',peerPort[i]);
+                    }*/else{
+                        console.log('attempting to connect to ',peerPort[i],' ...');
+                        startClient(parseInt(peerPort[i],10))
+                    }
+                }
             }else if (mType == 2){
                 console.log('Join redirected, try to connect to the peer above.');
 
@@ -288,20 +382,81 @@ var startClient = (_p) => {
                 })
                 peerTable = updated;
 
-                //  try connecting to the list of peers that have been returned from rejected server
+                console.log("\n\nTHIS IS MY PEERTABLE:\n"+peerTable);
+
+
+                // let check = true;
+
+                // function checkOwn (){
+                //     console.log("\n\n/////////INSIDE CHECKOWN/////////\n\n")
+                //     for(let j=0; j<peerNum; j++){
+                //         if(ranPort == peerPort[j]){
+                //             // return true;
+                //             check = false;
+                //         }
+                //     }
+                // }
+
+                // checkOwn();
+
+                // let cnt = 0;
+
+                // while(check && cnt < peerNum){
+
+                //     if(peerTable.length == n){
+                //         console.log('maximum peer number reached...');
+                //         break;
+                //     }
+                //     console.log('attempting to connect to ',peerPort[cnt],' ...');
+
+                //     // check to see if I am already connected to the same peer
+                //     if(peerTable.includes(peerPort[cnt])){
+                //         console.log('Already connected to ',peerPort[cnt]);
+                //     }else{
+                //         console.log('peerPort: ', peerPort);
+                //         startClient(parseInt(peerPort[cnt],10))
+                //     }
+
+                //     cnt++;
+                // }
+
+                // function checkAlrdyConnected(){
+                //     console.log("\n***********\ninside CHECKALRDYCONNECTED()");
+                //     console.log("typeof(peerTable[0]): "+typeof(peerTable[0]));
+                //     console.log("peerTable: "+peerTable);
+                //     console.log("peerPort: "+peerPort);
+                //     for(let i=0; i < peerNum; i++){
+                //         // console.log(typeof(peerPort[i]));
+                //         if(peerTable.includes(parseInt(peerPort[i],10))){
+                //             console.log("it has........");
+                //             return true;
+                //         }
+                //     }
+                // }
+
+
+
+                 // try connecting to the list of peers that have been returned from rejected server
                 for (let i = 0; i < peerNum; i++){
                     //  if current peer's peerTable is at maximum, exit out of for loop
-                    if(peerTable.length == n){
-                        console.log('maximum peer number reached...');
-                        break;
-                    }
-                    console.log('attempting to connect to ',peerPort[i],' ...');
+ 
+                    // if(peerTable.length == n){
+                    //     console.log('maximum peer number reached...');
+                    //     break;
+                    // }
+                    console.log('peerPort: ', peerPort);    
 
                     // check to see if I am already connected to the same peer
-                    if(peerTable.includes(peerPort[i])){
+                    if(peerTable.length == n){
+                        console.log('maximum peer number reached...');
+                    }else if(peerPort[i] == ranPort){
+                        console.log("THIS IS MY OWN PORT DUMBASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+                    }else if(peerTable.includes(parseInt(peerPort[i],10))){
                         console.log('Already connected to ',peerPort[i]);
-                    }else{
-                        console.log('peerPort: ', peerPort);
+                    }/*else if(checkAlrdyConnected()){
+                        console.log('Already connected to ',peerPort[i]);
+                    }*/else{
+                        console.log('attempting to connect to ',peerPort[i],' ...');
                         startClient(parseInt(peerPort[i],10))
                     }
                 }
@@ -326,10 +481,20 @@ var startClient = (_p) => {
             }
         });
     }
-    peerS.listen(ranPort, HOST);
+
 
 }
+peerS.listen(ranPort, HOST);
+// peerS.listen(ranPort, HOST, function(){
+//     setTimeout(function(){
+//         // create connection to imageDB
+//         // get response from imageDB
+//         // if 1 open image
+//         // if 2 send to other ones
 
+//         // send query packet to all other peers
+//     },2000)
+// }); /***/
 startClient();
 
 //  SERVER PART FOR IMAGEDB

@@ -22,7 +22,7 @@ module.exports = {
         });
     },
 
-    //                            (sock, msgType, peerS.address(), peerTable.length, peerTable, folderName)
+    //                            (sock, msgType, peerS.address(), peerTable, folderName)
     handleClientJoining: function (sock, msgType, addrport, peerTable, folderName) {  
         // console.log('\nConnected from peer ', sock.remoteAddress, ':', sock.remotePort);
 
@@ -53,7 +53,7 @@ module.exports = {
                 // if (peerTable.length == 2){
                 //     connectedPeers = peerTable[0];
                 // }
-
+                                    //   1   , localhost,        1,         "12798",      p1
                 sendPacket.init(data, msgType, addrport, peerTable.length, peerTable, folderName);
     
                 //  return the fully formulated ITP packet back to the Client
@@ -96,6 +96,7 @@ function handleClientRequests(data, sock) {
     console.log('requested image name: ', imageFilename);
     fs.readFile('images/' + imageFilename, (err, data) => {
         if (!err) {
+            console.log('abcabc')
             var infile = fs.createReadStream('images/' + imageFilename);
             const imageChunks = [];
             infile.on('data', function (chunk) {
@@ -112,6 +113,19 @@ function handleClientRequests(data, sock) {
             });
         } else {
             console.log('readfile error');
+            var infile = fs.createReadStream('images/' + imageFilename);
+            const imageChunks = [];
+            infile.on('data', function (chunk) {
+                imageChunks.push(chunk);
+            });
+            infile.on('close', function () {
+                console.log('CURRENT BUFFER: ');
+                let image = Buffer.concat(imageChunks);
+                console.log('CONCATONATED IMAGE: ', image);
+                ITPpacket.init(1, singleton.getSequenceNumber(), singleton.getTimestamp(), image, image.length);
+                sock.write(ITPpacket.getPacket());
+                sock.end();
+            });
         }
     });
 }
